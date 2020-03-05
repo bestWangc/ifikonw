@@ -7,6 +7,6 @@ class Base extends Controller
 {
     public function initialize()
     {
-        echo '我1111111111111111';
+        echo '';
     }
 }
