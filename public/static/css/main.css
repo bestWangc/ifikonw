@@ -1,0 +1,21 @@
+.main-wrapper {
+    display: flex;
+    height: 100vh;
+    align-items: center;
+}
+
+.btn{
+	border-radius: 25px;
+}
+
+.btn-success {
+    color: #fff;
+    background-color: #1aaf5d;
+    border-color: #1aaf5d;
+}
+
+.btn-success:not(:disabled):not(.disabled).active, .btn-success:not(:disabled):not(.disabled):active, .show>.btn-success.dropdown-toggle {
+    color: #fff;
+    background-color: #1aaf5d;
+    border-color: #1aaf5d;
+}
