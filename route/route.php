@@ -11,7 +11,8 @@
 
 Route::get('/', 'index/index');
 Route::get('/article_info', 'index/articleInfo');
-Route::get('/stop', 'stop/index');
+Route::get('/let_add', 'article/index');
+Route::post('/add_soup', 'article/create');
 
 return [
 
