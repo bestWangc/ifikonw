@@ -19,5 +19,5 @@ function returnMsg( $data = [], $code = 0, $msg = 'success'){
         $res['data'] = $data;
     }
 
-    return $res;
+    return json_encode($res,JSON_UNESCAPED_UNICODE);
 }
