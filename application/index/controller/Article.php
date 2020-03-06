@@ -58,7 +58,7 @@ class Article extends Controller
         Db::name('article')->where('id',$id)->setInc($field);
         $res = Db::name('article')->where('id',$id)->value($field);
         if($res){
-            return returnMsg(['count' => $res]);
+            return returnMsg(['count' => $res],0,'老弟，稳！');
         }
         return returnMsg([],1,'出，出了个错，尼酱！');
     }
