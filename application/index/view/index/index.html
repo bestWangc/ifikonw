@@ -32,7 +32,7 @@
 
 <div class="main-wrapper" style="position: relative; top: -6vh;">
     <div class="container main-sentence justify-content-center text-center">
-        <span id="sentence" style="font-size: 2rem;">人生就是六个大字，怎么着都不行。</span>
+        <span id="sentence" style="font-size: 2rem;"></span>
     </div>
 </div>
 
@@ -40,7 +40,7 @@
     <div class="container">
         <div class="row">
             <div class="col text-center">
-                <span class="btn btn-success btn-filled btn-xs"><a class="btn btn-success btn-filled btn-xs" href="59b9f.html">再来一条！</a></span>
+                <span class="btn btn-success btn-filled btn-xs" style="display: none" id = 'again'><a class="btn btn-success btn-filled btn-xs" href="javascript:;">再来一条！</a></span>
                 <!--
                   <button type="button" class="btn btn-success btn-xs" id="tx"><img src="/static/images/tx.png" style="width:22px;"> 有毒(4)</button>
 
@@ -55,6 +55,28 @@
 </div>
 <div class="text-center"><a href="javascript:;" target="_blank">豫ICP备14005038号-4</a></div>
 <script>
+    $(function () {
+        getInfo();
+
+        $('#again').click(function () {
+            getInfo();
+        });
+
+        function getInfo() {
+            $.get("/article_info",function(req,status){
+                if(req.code == 0){
+                    $('#sentence').html(req.data.content);
+                    if(req.data.again == 1){
+                        $('#again').show();
+                    } else {
+                        $('#again').hide();
+                    }
+                } else {
+                    layer.msg(req.msg);
+                }
+            });
+        }
+    });
     $('#tx').click(function(){
         var handleUrl="/dig_up.html";
         var id=82;
@@ -87,6 +109,6 @@
         },'json')
     });
 </script>
-<script src="/static/js/layer.js"></script>
+<!--<script src="/static/js/layer.js"></script>-->
 </body>
 </html>

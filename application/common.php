@@ -10,3 +10,14 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+function returnMsg( $data = [], $code = 0, $msg = 'success'){
+    $res = [
+        'code' => $code,
+        'msg' => $msg
+    ];
+    if(!empty($data)){
+        $res['data'] = $data;
+    }
+
+    return $res;
+}

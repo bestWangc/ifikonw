@@ -27,27 +27,32 @@ class Base extends Controller
         if (false !== strpos($ip, ',')) $ip = reset(explode(',', $ip));
 
         if(!empty($ip)){
-            //判断数据库有没有此ip
-            $info = Db::name('member')->where('ip',$ip)->field('id,last_day,count')->find();
-            if(empty($info)){
-                $data = [
-                    'ip' => $ip,
-                    'last_day' => time()
-                ];
-                $insertID = Db::name('member')->insertGetId($data);
-            } else {
-                if(time() - $info['last_day'] > 86400){
-                    $data = [
-                        'ip' => $ip,
-                        'count' => $info['count'] + 1,
-                        'last_day' => time()
-                    ];
-                    Db::name('member')->where('id',$info['id'])->update($data);
-                }
-                $insertID = $info['id'];
+            if(empty($lastTime)){
+                $this->memberID = $this->setIP($ip);
             }
-            $this->memberID = $insertID;
         }
         return $ip;
+    }
+
+    private function setIP($ip){
+        $info = Db::name('member')->where('ip',$ip)->field('id,last_day,count')->find();
+        if(empty($info)){
+            $data = [
+                'ip' => $ip,
+                'last_day' => time()
+            ];
+            $insertID = Db::name('member')->insertGetId($data);
+        } else {
+            if(time() - $info['last_day'] > 86400){
+                $data = [
+                    'ip' => $ip,
+                    'count' => $info['count'] + 1,
+                    'last_day' => time()
+                ];
+                Db::name('member')->where('id',$info['id'])->update($data);
+            }
+            $insertID = $info['id'];
+        }
+        return $insertID;
     }
 }
