@@ -13,6 +13,7 @@ Route::get('/', 'index/index');
 Route::get('/article_info', 'index/articleInfo');
 Route::get('/let_add', 'article/index');
 Route::post('/add_soup', 'article/create');
+Route::post('/article_up', 'article/articleUp');
 
 return [
 

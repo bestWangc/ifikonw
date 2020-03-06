@@ -32,7 +32,15 @@
 
 <div class="main-wrapper" style="position: relative; top: -6vh;">
     <div class="container main-sentence justify-content-center text-center">
-        <span id="sentence" style="font-size: 2rem;"></span>
+        <input type="hidden" id = "article-id" value="">
+        <span id = "sentence" style="font-size: 2rem;"></span>
+        <br>
+        <br>
+        <div style="display: none" id ="operates">
+            <button class="btn btn-outline-primary operate" value = "1">真 <span class="real">0</span></button>
+            &nbsp;
+            <button class="btn btn-outline-primary operate" value = "0">假 <span class="fake">0</span></button>
+        </div>
     </div>
 </div>
 
@@ -41,12 +49,6 @@
         <div class="row">
             <div class="col text-center">
                 <span class="btn btn-success btn-filled btn-xs" style="display: none" id = 'again'><a class="btn btn-success btn-filled btn-xs" href="javascript:;">再来一条！</a></span>
-                <!--
-                  <button type="button" class="btn btn-success btn-xs" id="tx"><img src="/static/images/tx.png" style="width:22px;"> 有毒(4)</button>
-
-                  <button type="button" class="btn btn-light btn-xs" id="ha"><img src="/static/images/ha.png" style="width:22px;"> 无毒(5)</button>
-                  -->
-                <br>
                 <br>
                 <div style="color:#946dff;font-weight:bold;">主人：874990975</div>
             </div>
@@ -57,6 +59,23 @@
 <script>
     $(function () {
         getInfo();
+        $('.operate').click(function () {
+            var btn = $(this);
+            let type = $(this).val();
+            let id = $('#article-id').val();
+
+            $.post('/article_up',{id:id,type:type},function(data){
+                var callingBack = '';
+                if(data.code == 0){
+                    callingBack = function (data) {
+                        btn.find('span').html(data.count);
+                    };
+                }
+                layer.closeAll('loading');
+                layer.msg(data.msg,{time: 1000},callingBack(data.data));
+            },'json')
+        });
+
 
         $('#again').click(function () {
             getInfo();
@@ -66,10 +85,15 @@
             $.get("/article_info",function(req,status){
                 if(req.code == 0){
                     $('#sentence').html(req.data.content);
+                    $('#article-id').val(req.data.id);
+                    $('.real').html(req.data.real);
+                    $('.fake').html(req.data.fake);
                     if(req.data.again == 1){
                         $('#again').show();
+                        $('#operates').show();
                     } else {
                         $('#again').hide();
+                        $('#operates').hide();
                     }
                 } else {
                     layer.msg(req.msg);
@@ -77,38 +101,7 @@
             });
         }
     });
-    $('#tx').click(function(){
-        var handleUrl="/dig_up.html";
-        var id=82;
-        $.post(handleUrl,{id:id},function(data){
-            switch(data.status){
-                case 1:
-                    layer.msg(data.msg,{icon:6});
-                    setTimeout("location.href='/soup/59b9f.html';", 1000);
-                    break;
-                default:
-                    layer.msg(data.msg,{icon:5});
-                    setTimeout("location.href='/soup/59b9f.html';", 1000);
-            }
-        },'json')
-    });
-
-    $('#ha').click(function(){
-        var handleUrl="/dig_down.html";
-        var id=82;
-        $.post(handleUrl,{id:id},function(data){
-            switch(data.status){
-                case 1:
-                    layer.msg(data.msg,{icon:6});
-                    setTimeout("location.href='/soup/59b9f.html';", 1000);
-                    break;
-                default:
-                    layer.msg(data.msg,{icon:5});
-                    setTimeout("location.href='/soup/59b9f.html';", 1000);
-            }
-        },'json')
-    });
 </script>
-<!--<script src="/static/js/layer.js"></script>-->
+<script src="static/js/layer/layer.js"></script>
 </body>
 </html>

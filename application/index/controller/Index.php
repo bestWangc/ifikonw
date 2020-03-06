@@ -25,7 +25,7 @@ class Index extends Base
             $res['content'] = '冷知识都被您看完了，真TM棒棒的！';
             $res['again'] = 0;
         }
-        $info = Db::name('article')->where('id',$articleID)->field('content,real,fake')->find();
+        $info = Db::name('article')->where('id',$articleID)->field('id,content,real,fake')->find();
         if(!empty($info)){
             $res = $info;
             $res['again'] = 1;

@@ -39,4 +39,27 @@ class Article extends Controller
         }
         return returnMsg([],0,'盘失败了，再来！');
     }
+
+    public function articleUp(Request $request)
+    {
+        $id = $request::post('id','');
+        if(empty($id)){
+            return returnMsg([],1,'出了个错，再来一下子！');
+        }
+        $type = $request::post('type/d','');
+        if($type === ''){
+            return returnMsg([],1,'选个真假啊骚年！');
+        }
+        if($type === 1){
+            $field = 'real';
+        } else {
+            $field = 'fake';
+        }
+        Db::name('article')->where('id',$id)->setInc($field);
+        $res = Db::name('article')->where('id',$id)->value($field);
+        if($res){
+            return returnMsg(['count' => $res]);
+        }
+        return returnMsg([],1,'出，出了个错，尼酱！');
+    }
 }
