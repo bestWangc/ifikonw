@@ -27,7 +27,7 @@ class Compare extends Controller
     //比较相似度
     public function start($data)
     {
-        $allArticle = Db::name('article')->where('statis',1)->field('id,content,create_at')->select();
+        $allArticle = Db::name('article')->where('status',1)->field('id,content,create_at')->select();
 
         $analysis = new Analysis();
         $baseStr = array_filter(explode(',',$analysis->run($data['content'])));
