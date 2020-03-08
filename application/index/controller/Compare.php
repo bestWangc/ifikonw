@@ -19,6 +19,7 @@ class Compare extends Controller
             ->leftJoin('article a1','a1.id = c.article_id_new')
             ->field('c.id as row_id,c.ratio,a.id as old_id,a.content as old_content,a.create_at as old_create,a1.id as new_id,a1.content as new_content,a1.create_at as new_create')
             ->where('c.status',1)
+            ->limit(30)
             ->select();
         $this->assign('info',$info);
         return $this->fetch();
