@@ -37,7 +37,7 @@ class Index extends Base
     {
         $articleID = 0;
         $readInfo = Db::name('read')->where('member_id',$memberID)->column('article_id');
-        $articleInfo = Db::name('article')->column('id');
+        $articleInfo = Db::name('article')->where('status',1)->column('id');
         $choseArr = array_diff($articleInfo,$readInfo);
 
         if(!empty($choseArr)){

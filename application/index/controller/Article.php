@@ -58,8 +58,8 @@ class Article extends Controller
         } else {
             $field = 'fake';
         }
-        Db::name('article')->where('id',$id)->setInc($field);
-        $res = Db::name('article')->where('id',$id)->value($field);
+        Db::name('article')->where('id',$id)->where('status',1)->setInc($field);
+        $res = Db::name('article')->where('id',$id)->where('status',1)->value($field);
         if($res){
             return returnMsg(['count' => $res],0,'老弟，稳！');
         }
