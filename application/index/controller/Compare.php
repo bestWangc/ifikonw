@@ -44,7 +44,7 @@ class Compare extends Controller
             $baseMo = $this->getVectorStr($baseStr,$wordArr);
             $tempMo = $this->getVectorStr($tempStr,$wordArr);
             $percent = $this->similarity($baseMo,$tempMo) * 100;
-            if($percent < 20){
+            if($percent < 30){
                 continue;
             }
             $temp = [
