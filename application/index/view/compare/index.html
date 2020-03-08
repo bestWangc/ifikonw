@@ -26,31 +26,47 @@
     .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
         vertical-align: middle;
     }
+    .top-wrap{
+        position: fixed;
+        top: 0;
+        padding: 10px 20px;
+        width: 100%;
+        left: 0;
+        background: #fff;
+        z-index: 999
+    }
+    .main-sentence{
+        padding-top: 70px;
+        box-sizing: border-box;
+    }
+    .main-wrapper{
+        height: auto;
+    }
 </style>
 <body>
-<div class="top-wrap" style="position: absolute; top: 1vh;width: 100%;z-index: 999">
-    <div class="container">
-        <div class="row" style="margin-top: 30px;">
-            <div class="col">
-                <a href="index1.html"><img src="static/picture/logo.png" alt="冷知识 i konw" title="冷知识 i konw"></a>
+
+<div class="main-wrapper" >
+    <div class="top-wrap" >
+        <div class="container">
+            <div class="row" >
+                <div class="col">
+                    <a href="/"><img src="static/picture/logo.png" alt="冷知识 i konw" title="冷知识 i konw"></a>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="main-wrapper" style="position: relative; top: -25vh;">
     <div class="container main-sentence justify-content-center ">
         <div class="panel panel-success">
-            <div class="panel-heading">
+            <div class="panel-heading text-center">
                 <h3 class="panel-title">结果</h3>
             </div>
             <div class="panel-body">
                 <table class="table table-hover table-condensed table-bordered">
                     <thead>
                         <tr>
-                            <th class="text-center">内容</th>
-                            <th class="text-center">相似度</th>
-                            <th class="text-center">操作</th>
+                            <th width="60%" class="text-center">内容</th>
+                            <th width="10%" class="text-center">相似度</th>
+                            <th width="30%" class="text-center">操作</th>
                         </tr>
                     </thead>
                     {volist name="info" id="vo"}
