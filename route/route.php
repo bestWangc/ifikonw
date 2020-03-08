@@ -14,6 +14,9 @@ Route::get('/article_info', 'index/articleInfo');
 Route::get('/let_add', 'article/index');
 Route::post('/add_soup', 'article/create');
 Route::post('/article_up', 'article/articleUp');
+Route::get('/compare', 'compare/index');
+Route::get('/del_repeat', 'compare/repeat');
+Route::get('/del_compare', 'compare/delete');
 
 return [
 

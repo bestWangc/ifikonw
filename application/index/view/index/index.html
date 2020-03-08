@@ -90,7 +90,11 @@
         });
 
         function getInfo() {
+            layer.load(2, {
+                shade: [0.5,'#fff']
+            });
             $.get("/article_info",function(req,status){
+                layer.closeAll('loading');
                 if(req.code == 0){
                     $('#sentence').html(req.data.content);
                     $('#article-id').val(req.data.id);

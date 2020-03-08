@@ -34,6 +34,9 @@ class Article extends Controller
         //文章id
         $articleID = Db::name('article')->insertGetId($data);
 
+        //比较相似度
+        $compare = new Compare();
+        $compare->start(['id' => $articleID,'content' => $content]);
         if($articleID){
             return returnMsg([],0,'恭喜，盘它！');
         }
