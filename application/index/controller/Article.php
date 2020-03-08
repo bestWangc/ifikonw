@@ -22,7 +22,7 @@ class Article extends Controller
         $name = $request::post('name','');
 
         //查找是否存在该数据
-        $info = Db::name('article')->where('content',$content)->value('id');
+        $info = Db::name('article')->where('content',$content)->where('status',1)->value('id');
         if(!empty($info)){
             return returnMsg([],1,'别人已经盘过了，换一条噻！');
         }
