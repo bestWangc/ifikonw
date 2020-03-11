@@ -54,3 +54,22 @@ function getUrl($url, $header = false) {
     curl_close($ch);
     return $content;
 }
+
+function jieba($str){
+    ini_set('memory_limit', '1024M');
+    \Fukuball\Jieba\Jieba::init();
+    \Fukuball\Jieba\Finalseg::init();
+    $words = \Fukuball\Jieba\Jieba::cut($str);
+
+    $stopWord = file_get_contents(PUBLIC_PATH.'/static/stopword.txt');
+    $stopWord = str_replace("\r", '', $stopWord);
+    $stopWord = str_replace("\n", '-', $stopWord);
+    $stopWords = explode("-",$stopWord);
+    $final = [];
+    foreach ($words as $key){
+        if(!in_array($key,$stopWords)){
+            array_push($final,$key);
+        }
+    }
+    return $final;
+}

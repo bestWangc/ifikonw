@@ -14,8 +14,18 @@ class Compare extends Controller
 {
     public function index()
     {
-        $data = ['id' => 35,'content' => '毛的尿尿不是蓝色的'];
-        $res = $this->start($data);
+        ini_set('memory_limit', '1024M');
+        Jieba::init();
+        Finalseg::init();
+        $allArticle = Db::name('article')->where('status',1)->field('id,content')->select();
+
+        $stopWord = file_get_contents(PUBLIC_PATH.'/static/stopword.txt');
+        foreach ($allArticle as $key => $val) {
+            $res = Jieba::cut($val['content']);
+            $baseStr = $this->stopWord($res,$stopWord);
+            $temp_content = json_encode($baseStr,JSON_UNESCAPED_UNICODE);
+            Db::name('article')->where('id',$val['id'])->update(['temp_content'=>$temp_content]);
+        }
 
         die;
         $info = Db::name('compare')
@@ -33,25 +43,16 @@ class Compare extends Controller
     //比较相似度
     public function start($data)
     {
-        ini_set('memory_limit', '1024M');
-
         $allArticle = Db::name('article')->where('status',1)->field('id,temp_content,create_at')->select();
 
-        Jieba::init();
-        Finalseg::init();
-        $baseStr = Jieba::cut($data['content']);
-        $stopWord = file_get_contents(PUBLIC_PATH.'/static/stopword.txt');
-
-        $baseStr = $this->stopWord($baseStr,$stopWord);
-        if(empty($baseStr)){
-            return false;
-        }
+        $baseStr = $data['content'];
         $compareArr = [];
         foreach ($allArticle as $key => $val) {
             if($val['id'] == $data['id']){
                 continue;
             }
             $tempStr = json_decode($val['temp_content'],true);
+            $tempStr = $this->stopWord($tempStr,$stopWord);
             if(empty($tempStr)){
                 continue;
             }
@@ -61,7 +62,7 @@ class Compare extends Controller
             $baseMo = $this->getVectorStr($baseStr,$wordArr);
             $tempMo = $this->getVectorStr($tempStr,$wordArr);
             $percent = $this->similarity($baseMo,$tempMo) * 100;
-            if($percent < 30){
+            if($percent < 45){
                 continue;
             }
             $temp = [
@@ -113,21 +114,6 @@ class Compare extends Controller
             $vectorStr[$key1] = $num;
         }
         return $vectorStr;
-    }
-
-    public function stopWord($words,$stopWord)
-    {
-        $stopWord = str_replace("\r", '', $stopWord);
-        $stopWord = str_replace("\n", '-', $stopWord);
-        $stopWords = explode("-",$stopWord);
-        $final = [];
-        foreach ($words as $key){
-            if(!in_array($key,$stopWords)){
-                array_push($final,$key);
-            }
-        }
-
-        return $final;
     }
 
     public function repeat(Request $request)

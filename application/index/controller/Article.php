@@ -26,8 +26,13 @@ class Article extends Controller
         if(!empty($info)){
             return returnMsg([],1,'别人已经盘过了，换一条噻！');
         }
+        $tempContent = jieba($content);
+        if(empty($tempContent)){
+            return returnMsg([],1,'分词失败了！');
+        }
         $data = [
             'content' => $content,
+            'temp_content' => $tempContent,
             'link' => $link,
             'name' => $name
         ];
@@ -36,7 +41,7 @@ class Article extends Controller
 
         //比较相似度
         $compare = new Compare();
-        $compare->start(['id' => $articleID,'content' => $content]);
+        $compare->start(['id' => $articleID,'content' => $tempContent]);
         if($articleID){
             return returnMsg([],0,'恭喜，盘它！');
         }
