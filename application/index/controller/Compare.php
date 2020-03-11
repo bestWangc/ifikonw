@@ -14,18 +14,8 @@ class Compare extends Controller
 {
     public function index()
     {
-        ini_set('memory_limit', '1024M');
-        Jieba::init();
-        Finalseg::init();
-        $allArticle = Db::name('article')->where('status',1)->field('id,content')->select();
-
-        $stopWord = file_get_contents(PUBLIC_PATH.'/static/stopword.txt');
-        foreach ($allArticle as $key => $val) {
-            $res = Jieba::cut($val['content']);
-            $baseStr = $this->stopWord($res,$stopWord);
-            $temp_content = json_encode($baseStr,JSON_UNESCAPED_UNICODE);
-            Db::name('article')->where('id',$val['id'])->update(['temp_content'=>$temp_content]);
-        }
+        $data = ['id' => 35,'content' => '毛的尿尿不是蓝色的'];
+        $res = $this->start($data);
 
         die;
         $info = Db::name('compare')
@@ -45,7 +35,7 @@ class Compare extends Controller
     {
         ini_set('memory_limit', '1024M');
 
-        $allArticle = Db::name('article')->where('status',1)->field('id,content,create_at')->select();
+        $allArticle = Db::name('article')->where('status',1)->field('id,temp_content,create_at')->select();
 
         Jieba::init();
         Finalseg::init();
@@ -61,8 +51,7 @@ class Compare extends Controller
             if($val['id'] == $data['id']){
                 continue;
             }
-            $tempStr = Jieba::cut($val['content']);
-            $tempStr = $this->stopWord($tempStr,$stopWord);
+            $tempStr = json_decode($val['temp_content'],true);
             if(empty($tempStr)){
                 continue;
             }
@@ -72,7 +61,7 @@ class Compare extends Controller
             $baseMo = $this->getVectorStr($baseStr,$wordArr);
             $tempMo = $this->getVectorStr($tempStr,$wordArr);
             $percent = $this->similarity($baseMo,$tempMo) * 100;
-            if($percent < 45){
+            if($percent < 30){
                 continue;
             }
             $temp = [
