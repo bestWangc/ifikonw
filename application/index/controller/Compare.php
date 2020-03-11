@@ -1,7 +1,8 @@
 <?php
 namespace app\index\controller;
 
-use phpanalysis\src\Analysis;
+use Fukuball\Jieba\Finalseg;
+use Fukuball\Jieba\Jieba;
 use app\index\controller\LCS;
 use think\Controller;
 use think\Db;
@@ -13,6 +14,20 @@ class Compare extends Controller
 {
     public function index()
     {
+        ini_set('memory_limit', '1024M');
+        Jieba::init();
+        Finalseg::init();
+        $allArticle = Db::name('article')->where('status',1)->field('id,content')->select();
+
+        $stopWord = file_get_contents(PUBLIC_PATH.'/static/stopword.txt');
+        foreach ($allArticle as $key => $val) {
+            $res = Jieba::cut($val['content']);
+            $baseStr = $this->stopWord($res,$stopWord);
+            $temp_content = json_encode($baseStr,JSON_UNESCAPED_UNICODE);
+            Db::name('article')->where('id',$val['id'])->update(['temp_content'=>$temp_content]);
+        }
+
+        die;
         $info = Db::name('compare')
             ->alias('c')
             ->leftJoin('article a','a.id = c.article_id_old')
@@ -28,16 +43,29 @@ class Compare extends Controller
     //比较相似度
     public function start($data)
     {
+        ini_set('memory_limit', '1024M');
+
         $allArticle = Db::name('article')->where('status',1)->field('id,content,create_at')->select();
 
-        $analysis = new Analysis();
-        $baseStr = array_filter(explode(',',$analysis->run($data['content'])));
+        Jieba::init();
+        Finalseg::init();
+        $baseStr = Jieba::cut($data['content']);
+        $stopWord = file_get_contents(PUBLIC_PATH.'/static/stopword.txt');
+
+        $baseStr = $this->stopWord($baseStr,$stopWord);
+        if(empty($baseStr)){
+            return false;
+        }
         $compareArr = [];
         foreach ($allArticle as $key => $val) {
             if($val['id'] == $data['id']){
                 continue;
             }
-            $tempStr = array_filter(explode(',',$analysis->run($val['content'])));
+            $tempStr = Jieba::cut($val['content']);
+            $tempStr = $this->stopWord($tempStr,$stopWord);
+            if(empty($tempStr)){
+                continue;
+            }
             //设置所有分词的总集合
             $wordArr = array_unique(array_merge($baseStr,$tempStr));
             //获取分词后的每个数组 向量的模
@@ -96,6 +124,21 @@ class Compare extends Controller
             $vectorStr[$key1] = $num;
         }
         return $vectorStr;
+    }
+
+    public function stopWord($words,$stopWord)
+    {
+        $stopWord = str_replace("\r", '', $stopWord);
+        $stopWord = str_replace("\n", '-', $stopWord);
+        $stopWords = explode("-",$stopWord);
+        $final = [];
+        foreach ($words as $key){
+            if(!in_array($key,$stopWords)){
+                array_push($final,$key);
+            }
+        }
+
+        return $final;
     }
 
     public function repeat(Request $request)
