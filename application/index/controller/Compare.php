@@ -44,7 +44,7 @@ class Compare extends Controller
             $baseMo = $this->getVectorStr($baseStr,$wordArr);
             $tempMo = $this->getVectorStr($tempStr,$wordArr);
             $percent = $this->similarity($baseMo,$tempMo) * 100;
-            if($percent < 30){
+            if($percent < 45){
                 continue;
             }
             $temp = [
@@ -136,7 +136,7 @@ class Compare extends Controller
         if(empty($id)){
             return returnMsg([],1,'参数不全啊！');
         }
-        $res = Db::name('compare')->where('id',$id)->setField('status',0);
+        $res = Db::name('compare')->where('id',$id)->delete();
         if($res){
             return returnMsg([],0,'删掉了！');
         }
